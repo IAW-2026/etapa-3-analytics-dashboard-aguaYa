@@ -16,6 +16,7 @@ export default function SignInPage() {
           </p>
         </div>
         <SignIn
+          afterSignOutUrl="/sign-in"
           appearance={{
             elements: {
               rootBox: "w-full",

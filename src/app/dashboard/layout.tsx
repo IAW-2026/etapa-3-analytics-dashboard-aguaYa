@@ -1,6 +1,9 @@
+import { requireAnalyst } from "@/lib/auth-utils"
 import Sidebar from "./sidebar"
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+  await requireAnalyst()
+
   return (
     <div className="flex h-screen bg-transparent text-slate-900 dark:text-slate-100">
       <Sidebar />

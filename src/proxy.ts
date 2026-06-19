@@ -8,9 +8,16 @@ export default clerkMiddleware(async (auth, req) => {
     return NextResponse.next()
   }
 
-  const { userId } = await auth()
+  const { userId, sessionClaims } = await auth()
 
   if (!userId) {
+    return NextResponse.redirect(new URL('/sign-in', req.url))
+  }
+
+  const metadata = sessionClaims?.public_metadata as Record<string, unknown> | undefined
+  const roles = (metadata?.roles as string[]) || []
+
+  if (!roles.includes('analyst')) {
     return NextResponse.redirect(new URL('/sign-in', req.url))
   }
 
