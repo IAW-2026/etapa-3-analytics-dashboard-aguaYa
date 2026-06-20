@@ -43,13 +43,7 @@ export default function Sidebar() {
 
       <nav className="flex-1 space-y-1 overflow-y-auto p-4">
         <p className="px-3 text-xs font-medium text-slate-500 uppercase tracking-wider">General</p>
-        {mainNav.map((item) => (
-          <NavLink
-            key={item.href}
-            item={item}
-            isActive={pathname === item.href || pathname.startsWith(item.href + "/")}
-          />
-        ))}
+        <NavLink item={mainNav[0]} isActive={pathname === mainNav[0].href} />
 
         {navSections.map((section) => (
           <div key={section.title}>
@@ -68,7 +62,7 @@ export default function Sidebar() {
       </nav>
 
       <div className="border-t border-white/20 p-4 dark:border-slate-700/30">
-        <div className="flex items-center gap-3 px-3 py-2">
+        <div className="mb-2 flex items-center gap-3 px-3 py-2">
           <UserButton />
           <span className="text-sm text-slate-600 dark:text-slate-400">Mi cuenta</span>
         </div>

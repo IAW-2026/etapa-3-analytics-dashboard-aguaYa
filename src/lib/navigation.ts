@@ -1,9 +1,12 @@
 import {
   LayoutDashboard,
-  ArrowLeftRight,
-  Users,
+  Store,
+  Package,
   ShoppingCart,
-  Star,
+  Truck,
+  CreditCard,
+  MessageSquare,
+  Users,
   type LucideIcon,
 } from "lucide-react"
 
@@ -14,14 +17,29 @@ export type NavItem = {
 }
 
 export const mainNav: NavItem[] = [
-  { label: "Overview", href: "/dashboard/overview", icon: LayoutDashboard },
+  { label: "Overview", href: "/dashboard", icon: LayoutDashboard },
 ]
 
-export const analyticsNav: NavItem[] = [
-  { label: "Transacciones", href: "/dashboard/transactions", icon: ArrowLeftRight },
-  { label: "Usuarios", href: "/dashboard/users", icon: Users },
-  { label: "Pedidos", href: "/dashboard/orders", icon: ShoppingCart },
-  { label: "Reseñas", href: "/dashboard/reviews", icon: Star },
+export const sellerNav: NavItem[] = [
+  { label: "Vendedores", href: "/dashboard/seller", icon: Store },
+  { label: "Productos", href: "/dashboard/seller/products", icon: Package },
+  { label: "Pedidos", href: "/dashboard/seller/orders", icon: ShoppingCart },
+]
+
+export const deliveryNav: NavItem[] = [
+  { label: "Delivery", href: "/dashboard/delivery", icon: Truck },
+]
+
+export const paymentsNav: NavItem[] = [
+  { label: "Pagos", href: "/dashboard/payments", icon: CreditCard },
+]
+
+export const feedbackNav: NavItem[] = [
+  { label: "Feedback", href: "/dashboard/feedback", icon: MessageSquare },
+]
+
+export const buyerNav: NavItem[] = [
+  { label: "Buyers", href: "/dashboard/buyers", icon: Users },
 ]
 
 export type NavSection = {
@@ -30,5 +48,9 @@ export type NavSection = {
 }
 
 export const navSections: NavSection[] = [
-  { title: "Analytics", items: analyticsNav },
+  { title: "Seller", items: sellerNav },
+  { title: "Delivery", items: deliveryNav },
+  { title: "Payments", items: paymentsNav },
+  { title: "Feedback", items: feedbackNav },
+  { title: "Buyer", items: buyerNav },
 ]
