@@ -11,16 +11,16 @@ const STAR_COLORS: Record<string, string> = {
 }
 
 type StarDistributionProps = {
-  resenasPorEstrella: Record<string, number>
+  data: Record<string, number>
   promedio: number
   total: number
   title: string
 }
 
-export function StarDistribution({ resenasPorEstrella, promedio, total, title }: StarDistributionProps) {
-  const data = ["5", "4", "3", "2", "1"].map((star) => ({
+export function StarDistribution({ data: dist, promedio, total, title }: StarDistributionProps) {
+  const chartData = ["5", "4", "3", "2", "1"].map((star) => ({
     star: `${star} ★`,
-    count: resenasPorEstrella[star] ?? 0,
+    count: dist[star] ?? 0,
     fill: STAR_COLORS[star],
   }))
 
@@ -40,7 +40,7 @@ export function StarDistribution({ resenasPorEstrella, promedio, total, title }:
 
       <div className="h-56">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data} layout="vertical" barCategoryGap={8}>
+          <BarChart data={chartData} layout="vertical" barCategoryGap={8}>
             <XAxis type="number" tick={{ fontSize: 12 }}  stroke="#94a3b8" />
             <YAxis type="category" dataKey="star" width={50} tick={{ fontSize: 13 }} stroke="#94a3b8" />
             <Tooltip

@@ -1,19 +1,36 @@
 'use client'
 
+import { useRouter, useSearchParams } from "next/navigation"
+import { useCallback } from "react"
 import type { Review } from "@/lib/types"
-import { Star, Search } from "lucide-react"
-import Link from "next/link"
+import { Star } from "lucide-react"
+import { Pagination } from "./pagination"
 
 type ReviewsTableProps = {
   reviews: Review[]
   total: number
   totalPages: number
   currentPage: number
-  estrellasFilter: string | null
 }
 
-export function ReviewsTable({ reviews, total, totalPages, currentPage, estrellasFilter }: ReviewsTableProps) {
-  const baseUrl = "/dashboard/feedback"
+export function ReviewsTable({ reviews, total, totalPages, currentPage }: ReviewsTableProps) {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const estrellasFilter = searchParams.get("estrellas")
+
+  const handleFilterChange = useCallback(
+    (value: string) => {
+      const params = new URLSearchParams(searchParams.toString())
+      if (value) {
+        params.set("estrellas", value)
+      } else {
+        params.delete("estrellas")
+      }
+      params.delete("page")
+      router.push(`/dashboard/feedback?${params.toString()}`, { scroll: false })
+    },
+    [router, searchParams],
+  )
 
   return (
     <div className="rounded-xl border border-white/30 bg-linear-to-br from-white/30 to-slate-100/30 shadow-lg shadow-black/5 backdrop-blur-xl dark:border-slate-700/40 dark:from-slate-900/40 dark:to-slate-800/40">
@@ -23,21 +40,18 @@ export function ReviewsTable({ reviews, total, totalPages, currentPage, estrella
         </h2>
 
         <div className="flex items-center gap-2">
-          <form method="GET" action={baseUrl} className="flex items-center gap-2">
-            <select
-              name="estrellas"
-              defaultValue={estrellasFilter ?? ""}
-              onChange={(e) => e.target.form?.submit()}
-              className="rounded-lg border border-white/30 bg-white/50 px-3 py-1.5 text-xs text-slate-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700/40 dark:bg-slate-900/50 dark:text-slate-300"
-            >
-              <option value="">Todas las estrellas</option>
-              <option value="5">5 estrellas</option>
-              <option value="4">4 estrellas</option>
-              <option value="3">3 estrellas</option>
-              <option value="2">2 estrellas</option>
-              <option value="1">1 estrella</option>
-            </select>
-          </form>
+          <select
+            value={estrellasFilter ?? ""}
+            onChange={(e) => handleFilterChange(e.target.value)}
+            className="rounded-lg border border-white/30 bg-white/50 px-3 py-1.5 text-xs text-slate-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700/40 dark:bg-slate-900/50 dark:text-slate-300"
+          >
+            <option value="">Todas las estrellas</option>
+            <option value="5">5 estrellas</option>
+            <option value="4">4 estrellas</option>
+            <option value="3">3 estrellas</option>
+            <option value="2">2 estrellas</option>
+            <option value="1">1 estrella</option>
+          </select>
         </div>
       </div>
 
@@ -101,37 +115,12 @@ export function ReviewsTable({ reviews, total, totalPages, currentPage, estrella
         </table>
       </div>
 
-      {totalPages > 1 && (
-        <div className="flex items-center justify-between border-t border-white/20 px-5 py-3 dark:border-slate-700/30">
-          <p className="text-xs text-slate-500 dark:text-slate-400">
-            Página {currentPage} de {totalPages}
-          </p>
-          <div className="flex gap-2">
-            {currentPage > 1 && (
-              <Link
-                href={`${baseUrl}?${new URLSearchParams({
-                  ...(estrellasFilter && { estrellas: estrellasFilter }),
-                  page: String(currentPage - 1),
-                }).toString()}`}
-                className="rounded-lg border border-white/30 bg-white/50 px-3 py-1 text-xs font-medium text-slate-700 transition-colors hover:bg-white/80 dark:border-slate-700/40 dark:bg-slate-900/50 dark:text-slate-300"
-              >
-                Anterior
-              </Link>
-            )}
-            {currentPage < totalPages && (
-              <Link
-                href={`${baseUrl}?${new URLSearchParams({
-                  ...(estrellasFilter && { estrellas: estrellasFilter }),
-                  page: String(currentPage + 1),
-                }).toString()}`}
-                className="rounded-lg border border-white/30 bg-white/50 px-3 py-1 text-xs font-medium text-slate-700 transition-colors hover:bg-white/80 dark:border-slate-700/40 dark:bg-slate-900/50 dark:text-slate-300"
-              >
-                Siguiente
-              </Link>
-            )}
-          </div>
-        </div>
-      )}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        baseUrl="/dashboard/feedback"
+        params={{ estrellas: estrellasFilter ?? undefined }}
+      />
     </div>
   )
 }

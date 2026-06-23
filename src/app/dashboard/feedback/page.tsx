@@ -1,10 +1,9 @@
-import { feedbackApi } from "@/lib/api"
-import type { FeedbackStats, Review, VendorRating, FeedbackResponse, PaginatedData } from "@/lib/types"
-import { MessageSquare, Star, Users, BarChart3, TrendingUp, TrendingDown } from "lucide-react"
-import Link from "next/link"
+import { MessageSquare, Star, BarChart3, Users, TrendingUp, TrendingDown } from "lucide-react"
+import { getFeedbackStats, getReviews, getTopVendors, getBottomVendors } from "@/lib/feedback-service"
 import { StarDistribution } from "./star-distribution"
 import { VendorRatings } from "./vendor-ratings"
 import { ReviewsTable } from "./reviews-table"
+import { StatCard } from "./stat-card"
 
 export const dynamic = "force-dynamic"
 
@@ -15,12 +14,10 @@ export default async function FeedbackPage({
 }) {
   const { page, estrellas } = await searchParams
 
-  let stats: FeedbackStats | null = null
-  let reviews: Review[] = []
-  let totalReviews = 0
-  let totalPages = 0
-  let topVendors: VendorRating[] = []
-  let bottomVendors: VendorRating[] = []
+  let stats: Awaited<ReturnType<typeof getFeedbackStats>> | null = null
+  let reviewsData: Awaited<ReturnType<typeof getReviews>> | null = null
+  let topVendors: Awaited<ReturnType<typeof getTopVendors>> = []
+  let bottomVendors: Awaited<ReturnType<typeof getBottomVendors>> = []
   let error: string | null = null
 
   try {
@@ -29,20 +26,17 @@ export default async function FeedbackPage({
     params.limit = "20"
     if (estrellas) params.estrellas = estrellas
 
-    const [statsRes, reviewsRes, topRes, bottomRes] = await Promise.all([
-      feedbackApi.get("/api/analytics/stats"),
-      feedbackApi.get("/api/analytics/reviews", params),
-      feedbackApi.get("/api/analytics/vendors/top", { limit: "5" }),
-      feedbackApi.get("/api/analytics/vendors/bottom", { limit: "5" }),
+    const results = await Promise.all([
+      getFeedbackStats(),
+      getReviews(params),
+      getTopVendors(5),
+      getBottomVendors(5),
     ])
 
-    stats = (statsRes as FeedbackResponse<FeedbackStats>).data
-    const reviewsData = reviewsRes as FeedbackResponse<PaginatedData<Review>>
-    reviews = reviewsData.data.items
-    totalReviews = reviewsData.data.total
-    totalPages = reviewsData.data.totalPages
-    topVendors = (topRes as FeedbackResponse<VendorRating[]>).data
-    bottomVendors = (bottomRes as FeedbackResponse<VendorRating[]>).data
+    stats = results[0]
+    reviewsData = results[1]
+    topVendors = results[2]
+    bottomVendors = results[3]
   } catch (e) {
     error = e instanceof Error ? e.message : "Error desconocido"
   }
@@ -65,67 +59,22 @@ export default async function FeedbackPage({
       {!error && stats && (
         <>
           <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="rounded-xl border border-white/30 bg-gradient-to-br from-white/30 to-slate-100/30 p-5 shadow-lg shadow-black/5 backdrop-blur-xl dark:border-slate-700/40 dark:from-slate-900/40 dark:to-slate-800/40">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-sky-100 text-sky-600 dark:bg-sky-900/50 dark:text-sky-400">
-                  <MessageSquare className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Total Reseñas</p>
-                  <p className="text-xl font-bold text-slate-900 dark:text-white">{stats.totalResenas}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="rounded-xl border border-white/30 bg-gradient-to-br from-white/30 to-slate-100/30 p-5 shadow-lg shadow-black/5 backdrop-blur-xl dark:border-slate-700/40 dark:from-slate-900/40 dark:to-slate-800/40">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-100 text-amber-600 dark:bg-amber-900/50 dark:text-amber-400">
-                  <Star className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Prom. Reseñas</p>
-                  <p className="text-xl font-bold text-slate-900 dark:text-white">
-                    {stats.promedioEstrellasResenas.toFixed(1)}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="rounded-xl border border-white/30 bg-gradient-to-br from-white/30 to-slate-100/30 p-5 shadow-lg shadow-black/5 backdrop-blur-xl dark:border-slate-700/40 dark:from-slate-900/40 dark:to-slate-800/40">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-100 text-purple-600 dark:bg-purple-900/50 dark:text-purple-400">
-                  <BarChart3 className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Total Valoraciones</p>
-                  <p className="text-xl font-bold text-slate-900 dark:text-white">{stats.totalValoraciones}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="rounded-xl border border-white/30 bg-gradient-to-br from-white/30 to-slate-100/30 p-5 shadow-lg shadow-black/5 backdrop-blur-xl dark:border-slate-700/40 dark:from-slate-900/40 dark:to-slate-800/40">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-100 text-emerald-600 dark:bg-emerald-900/50 dark:text-emerald-400">
-                  <Users className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Vendedores c/ Reseñas</p>
-                  <p className="text-xl font-bold text-slate-900 dark:text-white">{stats.vendedoresConResenas}</p>
-                </div>
-              </div>
-            </div>
+            <StatCard label="Total Reseñas" value={stats.totalResenas} icon={MessageSquare} color="sky" />
+            <StatCard label="Prom. Reseñas" value={stats.promedioEstrellasResenas.toFixed(1)} icon={Star} color="amber" />
+            <StatCard label="Total Valoraciones" value={stats.totalValoraciones} icon={BarChart3} color="purple" />
+            <StatCard label="Vendedores c/ Reseñas" value={stats.vendedoresConResenas} icon={Users} color="emerald" />
           </div>
 
           <div className="mb-6 grid gap-6 lg:grid-cols-2">
             <div className="grid gap-6">
               <StarDistribution
-                resenasPorEstrella={stats.resenasPorEstrella}
+                data={stats.resenasPorEstrella}
                 promedio={stats.promedioEstrellasResenas}
                 total={stats.totalResenas}
                 title="Distribución de Reseñas"
               />
               <StarDistribution
-                resenasPorEstrella={stats.valoracionesPorEstrella}
+                data={stats.valoracionesPorEstrella}
                 promedio={stats.promedioEstrellasValoraciones}
                 total={stats.totalValoraciones}
                 title="Distribución de Valoraciones"
@@ -149,11 +98,10 @@ export default async function FeedbackPage({
           </div>
 
           <ReviewsTable
-            reviews={reviews}
-            total={totalReviews}
-            totalPages={totalPages}
+            reviews={reviewsData?.items ?? []}
+            total={reviewsData?.total ?? 0}
+            totalPages={reviewsData?.totalPages ?? 0}
             currentPage={Number(page ?? 1)}
-            estrellasFilter={estrellas ?? null}
           />
         </>
       )}
