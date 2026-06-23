@@ -5,6 +5,9 @@
 :root {
   --background: #ffffff;
   --foreground: #0f172a;
+  --tooltip-bg: rgba(255, 255, 255, 0.85);
+  --tooltip-border: rgba(255, 255, 255, 0.5);
+  --tooltip-shadow: rgba(0, 0, 0, 0.08);
 }
 
 @theme inline {
@@ -35,6 +38,9 @@ body {
     linear-gradient(180deg, #020617 0%, #030712 45%, #000000 100%);
   --background: #020617;
   --foreground: #f1f5f9;
+  --tooltip-bg: rgba(30, 41, 59, 0.85);
+  --tooltip-border: rgba(71, 85, 105, 0.5);
+  --tooltip-shadow: rgba(0, 0, 0, 0.3);
 }
 
 ::selection {

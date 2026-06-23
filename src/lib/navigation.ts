@@ -2,18 +2,21 @@ import {
   LayoutDashboard,
   Store,
   Package,
-  ShoppingCart,
   Truck,
   CreditCard,
   MessageSquare,
   Users,
+  PieChart,
+  Table2,
+  Activity,
   type LucideIcon,
 } from "lucide-react"
 
 export type NavItem = {
   label: string
-  href: string
+  href?: string
   icon: LucideIcon
+  children?: NavItem[]
 }
 
 export const mainNav: NavItem[] = [
@@ -21,9 +24,16 @@ export const mainNav: NavItem[] = [
 ]
 
 export const sellerNav: NavItem[] = [
-  { label: "Vendedores", href: "/dashboard/seller", icon: Store },
+  {
+    label: "Vendedores",
+    icon: Store,
+    children: [
+      { label: "General", href: "/dashboard/seller", icon: Table2 },
+      { label: "Activos / Inactivos", href: "/dashboard/seller/active-inactive", icon: PieChart },
+      { label: "Actividad", href: "/dashboard/seller/activity", icon: Activity },
+    ],
+  },
   { label: "Productos", href: "/dashboard/seller/products", icon: Package },
-  { label: "Pedidos", href: "/dashboard/seller/orders", icon: ShoppingCart },
 ]
 
 export const deliveryNav: NavItem[] = [

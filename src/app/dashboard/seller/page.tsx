@@ -5,6 +5,8 @@ import { Store, Package, ShoppingCart, Users, Search } from "lucide-react"
 
 export const dynamic = "force-dynamic"
 
+type VendorBrief = { id: string; name: string; isActive: boolean; _count: { products: number; orders: number } }
+
 export default async function SellerPage({
   searchParams,
 }: {
@@ -16,6 +18,9 @@ export default async function SellerPage({
   let total = 0
   let pageCount = 0
   let error: string | null = null
+
+  let allVendors: VendorBrief[] = []
+  let globalTotal = 0
 
   try {
     const params: Record<string, string> = {}
@@ -30,9 +35,18 @@ export default async function SellerPage({
     error = e instanceof Error ? e.message : "Error desconocido"
   }
 
-  const activeVendors = vendors.filter((v) => v.isActive).length
-  const totalProducts = vendors.reduce((sum, v) => sum + v._count.products, 0)
-  const totalOrders = vendors.reduce((sum, v) => sum + v._count.orders, 0)
+  try {
+    const res = (await sellerApi.get("/api/admin/vendors/all")) as { items: VendorBrief[]; total: number }
+    allVendors = res.items
+    globalTotal = res.total
+  } catch {
+    allVendors = vendors.map((v) => ({ id: v.id, name: v.name, isActive: v.isActive, _count: v._count }))
+    globalTotal = total
+  }
+
+  const activeVendors = allVendors.filter((v) => v.isActive).length
+  const totalProducts = allVendors.reduce((sum, v) => sum + v._count.products, 0)
+  const totalOrders = allVendors.reduce((sum, v) => sum + v._count.orders, 0)
 
   return (
     <div>
@@ -59,7 +73,7 @@ export default async function SellerPage({
                 </div>
                 <div>
                   <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Total Vendedores</p>
-                  <p className="text-xl font-bold text-slate-900 dark:text-white">{total}</p>
+                  <p className="text-xl font-bold text-slate-900 dark:text-white">{globalTotal}</p>
                 </div>
               </div>
             </div>

@@ -1,7 +1,7 @@
 import { sellerApi } from "@/lib/api"
-import type { VendorDetailResponse, ProductItem, OrderItem, ListResponse } from "@/lib/types"
+import type { Vendor } from "@/lib/types"
 import Link from "next/link"
-import { Store, Package, ShoppingCart, ArrowLeft, Mail, Calendar } from "lucide-react"
+import { Store, Package, ShoppingCart, ArrowLeft, Mail, Calendar, Loader2 } from "lucide-react"
 
 export const dynamic = "force-dynamic"
 
@@ -12,38 +12,48 @@ export default async function VendorDetailPage({
 }) {
   const { id } = await params
 
-  let vendor: VendorDetailResponse["vendor"] | null = null
-  let products: ProductItem[] = []
-  let orders: OrderItem[] = []
-  let error: string | null = null
+  let vendor: Vendor | null = null
+  let vendorError: string | null = null
 
   try {
-    const res = (await sellerApi.get(`/api/admin/vendors/${id}`)) as VendorDetailResponse
+    const res = await sellerApi.get(`/api/admin/vendors/${id}`) as { success: boolean; vendor: Vendor }
     if (!res.success) throw new Error("Vendedor no encontrado")
     vendor = res.vendor
-
-    const [prodRes, ordRes] = await Promise.all([
-      sellerApi.get(`/api/admin/vendors/${id}/products`),
-      sellerApi.get(`/api/admin/vendors/${id}/orders`),
-    ])
-    products = (prodRes as ListResponse<ProductItem>).items
-    orders = (ordRes as ListResponse<OrderItem>).items
   } catch (e) {
-    error = e instanceof Error ? e.message : "Error desconocido"
+    vendorError = e instanceof Error ? e.message : "Error desconocido"
   }
 
-  if (error || !vendor) {
+  if (vendorError || !vendor) {
     return (
       <div>
-        <Link href="/dashboard/seller" className="mb-4 flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400">
+        <Link href="/dashboard/seller" className="mb-4 flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400">
           <ArrowLeft className="h-4 w-4" />
           Volver a vendedores
         </Link>
         <div className="rounded-xl border border-red-200/60 bg-white/80 px-5 py-4 text-sm text-red-700 shadow-lg shadow-black/5 backdrop-blur-xl dark:border-red-800/60 dark:bg-slate-900/80 dark:text-red-400">
-          {error ?? "Vendedor no encontrado"}
+          {vendorError ?? "Vendedor no encontrado"}
         </div>
       </div>
     )
+  }
+
+  let products: { id: string; name: string; price: number; stock: number; isActive: boolean }[] = []
+  let orders: { id: string; externalId: string; buyerName: string; total: number; createdAt: string }[] = []
+  let prodError: string | null = null
+  let ordError: string | null = null
+
+  try {
+    const prodRes = await sellerApi.get(`/api/admin/vendors/${id}/products`) as { success: boolean; items: typeof products }
+    products = prodRes.items ?? []
+  } catch (e) {
+    prodError = e instanceof Error ? e.message : null
+  }
+
+  try {
+    const ordRes = await sellerApi.get(`/api/admin/vendors/${id}/orders`) as { success: boolean; items: typeof orders }
+    orders = ordRes.items ?? []
+  } catch (e) {
+    ordError = e instanceof Error ? e.message : null
   }
 
   const totalRevenue = orders.reduce((sum, o) => sum + o.total, 0)
@@ -121,7 +131,9 @@ export default async function VendorDetailPage({
             <Package className="h-4 w-4 text-slate-500" />
             <h2 className="text-sm font-semibold text-slate-900 dark:text-white">Productos</h2>
           </div>
-          {products.length === 0 ? (
+          {prodError ? (
+            <p className="px-5 py-8 text-center text-sm text-red-500">Error al cargar productos.</p>
+          ) : products.length === 0 ? (
             <p className="px-5 py-8 text-center text-sm text-slate-500">Sin productos.</p>
           ) : (
             <div className="divide-y divide-white/20 dark:divide-slate-700/30">
@@ -156,16 +168,16 @@ export default async function VendorDetailPage({
             <ShoppingCart className="h-4 w-4 text-slate-500" />
             <h2 className="text-sm font-semibold text-slate-900 dark:text-white">Pedidos Recientes</h2>
           </div>
-          {orders.length === 0 ? (
+          {ordError ? (
+            <p className="px-5 py-8 text-center text-sm text-red-500">Error al cargar pedidos.</p>
+          ) : orders.length === 0 ? (
             <p className="px-5 py-8 text-center text-sm text-slate-500">Sin pedidos.</p>
           ) : (
             <div className="divide-y divide-white/20 dark:divide-slate-700/30">
               {orders.slice(0, 10).map((o) => (
                 <div key={o.id} className="flex items-center justify-between px-5 py-3">
                   <div>
-                    <p className="text-sm font-medium text-slate-900 dark:text-white">
-                      #{o.externalId}
-                    </p>
+                    <p className="text-sm font-medium text-slate-900 dark:text-white">#{o.externalId}</p>
                     <p className="text-xs text-slate-500 dark:text-slate-400">{o.buyerName}</p>
                   </div>
                   <div className="text-right">
