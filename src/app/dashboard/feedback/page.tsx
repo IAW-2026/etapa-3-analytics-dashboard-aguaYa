@@ -1,42 +1,49 @@
 import { MessageSquare, Star, BarChart3, Users, TrendingUp, TrendingDown } from "lucide-react"
-import { getFeedbackStats, getReviews, getTopVendors, getBottomVendors } from "@/lib/feedback-service"
+import { getFeedbackStats, getReviews, getValoraciones, getTopVendors, getBottomVendors } from "@/lib/feedback-service"
 import { StarDistribution } from "./star-distribution"
 import { VendorRatings } from "./vendor-ratings"
 import { ReviewsTable } from "./reviews-table"
+import { ValoracionesTable } from "./valoraciones-table"
 import { StatCard } from "./stat-card"
+import { TabBar } from "./tab-bar"
 
 export const dynamic = "force-dynamic"
 
 export default async function FeedbackPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string; estrellas?: string }>
+  searchParams: Promise<{ tab?: string; page?: string; estrellas?: string; vpage?: string; vestrellas?: string }>
 }) {
-  const { page, estrellas } = await searchParams
+  const { tab, page, estrellas, vpage, vestrellas } = await searchParams
+  const activeTab = tab === "valoraciones" ? "valoraciones" : "resenas"
 
   let stats: Awaited<ReturnType<typeof getFeedbackStats>> | null = null
   let reviewsData: Awaited<ReturnType<typeof getReviews>> | null = null
+  let valoracionesData: Awaited<ReturnType<typeof getValoraciones>> | null = null
   let topVendors: Awaited<ReturnType<typeof getTopVendors>> = []
   let bottomVendors: Awaited<ReturnType<typeof getBottomVendors>> = []
   let error: string | null = null
 
   try {
-    const params: Record<string, string> = {}
-    if (page) params.page = page
-    params.limit = "20"
-    if (estrellas) params.estrellas = estrellas
+    const reviewsParams: Record<string, string> = {}
+    if (page) reviewsParams.page = page
+    reviewsParams.limit = "15"
+    if (estrellas) reviewsParams.estrellas = estrellas
 
-    const results = await Promise.all([
-      getFeedbackStats(),
-      getReviews(params),
-      getTopVendors(5),
-      getBottomVendors(5),
-    ])
+    const valoracionesParams: Record<string, string> = {}
+    if (vpage) valoracionesParams.page = vpage
+    valoracionesParams.limit = "15"
+    if (vestrellas) valoracionesParams.estrellas = vestrellas
 
-    stats = results[0]
-    reviewsData = results[1]
-    topVendors = results[2]
-    bottomVendors = results[3]
+    stats = await getFeedbackStats()
+    topVendors = await getTopVendors(5)
+    bottomVendors = await getBottomVendors(5)
+
+    if (activeTab === "resenas") {
+      reviewsData = await getReviews(reviewsParams)
+    } else {
+      valoracionesData = await getValoraciones(valoracionesParams)
+    }
   } catch (e) {
     error = e instanceof Error ? e.message : "Error desconocido"
   }
@@ -97,12 +104,25 @@ export default async function FeedbackPage({
             </div>
           </div>
 
-          <ReviewsTable
-            reviews={reviewsData?.items ?? []}
-            total={reviewsData?.total ?? 0}
-            totalPages={reviewsData?.totalPages ?? 0}
-            currentPage={Number(page ?? 1)}
-          />
+          <TabBar activeTab={activeTab} estrellas={estrellas} vestrellas={vestrellas} />
+
+          {activeTab === "resenas" && (
+            <ReviewsTable
+              reviews={reviewsData?.items ?? []}
+              total={reviewsData?.total ?? 0}
+              totalPages={reviewsData?.totalPages ?? 0}
+              currentPage={Number(page ?? 1)}
+            />
+          )}
+
+          {activeTab === "valoraciones" && (
+            <ValoracionesTable
+              valoraciones={valoracionesData?.items ?? []}
+              total={valoracionesData?.total ?? 0}
+              totalPages={valoracionesData?.totalPages ?? 0}
+              currentPage={Number(vpage ?? 1)}
+            />
+          )}
         </>
       )}
     </div>

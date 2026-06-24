@@ -28,6 +28,7 @@ export function Pagination({ currentPage, totalPages, baseUrl, params = {} }: Pa
         {currentPage > 1 && (
           <Link
             href={buildHref(currentPage - 1)}
+            scroll={false}
             className="rounded-lg border border-white/30 bg-white/50 px-3 py-1 text-xs font-medium text-slate-700 transition-colors hover:bg-white/80 dark:border-slate-700/40 dark:bg-slate-900/50 dark:text-slate-300"
           >
             Anterior
@@ -36,6 +37,7 @@ export function Pagination({ currentPage, totalPages, baseUrl, params = {} }: Pa
         {currentPage < totalPages && (
           <Link
             href={buildHref(currentPage + 1)}
+            scroll={false}
             className="rounded-lg border border-white/30 bg-white/50 px-3 py-1 text-xs font-medium text-slate-700 transition-colors hover:bg-white/80 dark:border-slate-700/40 dark:bg-slate-900/50 dark:text-slate-300"
           >
             Siguiente

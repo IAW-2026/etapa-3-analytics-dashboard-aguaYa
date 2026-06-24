@@ -1,5 +1,5 @@
 import { feedbackApi } from "@/lib/api"
-import type { FeedbackStats, Review, VendorRating, PaginatedData } from "@/lib/types"
+import type { FeedbackStats, Review, Valoracion, VendorRating, PaginatedData } from "@/lib/types"
 
 export async function getFeedbackStats(): Promise<FeedbackStats> {
   const res = await feedbackApi.get("/api/analytics/stats") as { success: true; data: FeedbackStats }
@@ -8,6 +8,11 @@ export async function getFeedbackStats(): Promise<FeedbackStats> {
 
 export async function getReviews(params: Record<string, string> = {}): Promise<PaginatedData<Review>> {
   const res = await feedbackApi.get("/api/analytics/reviews", params) as { success: true; data: PaginatedData<Review> }
+  return res.data
+}
+
+export async function getValoraciones(params: Record<string, string> = {}): Promise<PaginatedData<Valoracion>> {
+  const res = await feedbackApi.get("/api/analytics/valoraciones", params) as { success: true; data: PaginatedData<Valoracion> }
   return res.data
 }
 
