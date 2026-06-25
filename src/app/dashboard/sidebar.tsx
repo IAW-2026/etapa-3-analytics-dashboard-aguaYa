@@ -1,9 +1,8 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useMemo, useEffect, useCallback } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useState, useMemo } from "react"
 import { cn } from "@/lib/utils"
 import { mainNav, navSections, type NavItem } from "@/lib/navigation"
 import { SignOutButton, UserButton } from "@clerk/nextjs"
@@ -125,6 +124,8 @@ function NavGroup({
 
 export default function Sidebar() {
   const pathname = usePathname()
+  const [isOpen, setIsOpen] = useState(false)
+  const close = useCallback(() => setIsOpen(false), [])
   const allPaths = useMemo(() => {
     const sectionPaths = navSections.flatMap((s) => collectAllPaths(s.items))
     return [...sectionPaths, ...mainNav.map((n) => n.href!).filter(Boolean)]
@@ -136,7 +137,7 @@ export default function Sidebar() {
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
           "fixed left-4 top-4 z-50 flex h-10 w-10 items-center justify-center rounded-xl border border-white/30 bg-white/80 shadow-lg backdrop-blur-xl transition-colors hover:bg-white lg:hidden dark:border-slate-700/40 dark:bg-slate-900/80 dark:hover:bg-slate-900",
-          isOpen && "left-68"
+          isOpen && "left-[17rem]"
         )}
         aria-label={isOpen ? "Cerrar menú" : "Abrir menú"}
       >
@@ -168,7 +169,7 @@ export default function Sidebar() {
 
       <nav className="flex-1 space-y-1 overflow-y-auto p-4">
         <p className="px-3 text-xs font-medium text-slate-500 uppercase tracking-wider">General</p>
-        <NavLink item={mainNav[0]} isActive={pathname === mainNav[0].href} />
+        <NavLink item={mainNav[0]} currentPath={pathname} allPaths={allPaths} />
 
         {navSections.map((section) => (
           <div key={section.title}>
