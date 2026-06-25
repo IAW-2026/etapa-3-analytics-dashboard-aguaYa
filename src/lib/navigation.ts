@@ -63,7 +63,15 @@ export const feedbackNav: NavItem[] = [
 ]
 
 export const buyerNav: NavItem[] = [
-  { label: "Buyers", href: "/dashboard/buyers", icon: Users },
+  {
+    label: "Buyers",
+    icon: Users,
+    children: [
+      { label: "Overview", href: "/dashboard/buyers", icon: LayoutDashboard },
+      { label: "Actividad", href: "/dashboard/buyers/activity", icon: Activity },
+      { label: "Ingresos", href: "/dashboard/buyers/revenue", icon: BarChart3 },
+    ],
+  },
 ]
 
 export type NavSection = {

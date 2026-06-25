@@ -9,7 +9,10 @@ export async function requireAnalyst() {
   const user = await client.users.getUser(userId);
   const roles = (user.publicMetadata?.roles as string[]) || [];
 
-  // if (!roles.includes('analyst')) {
-  //   redirect('/sign-in')
-  // }
+  if (!roles.includes("analyst")) {
+    if (sessionId) {
+      await client.sessions.revokeSession(sessionId);
+    }
+    redirect("/sign-out-session");
+  }
 }
