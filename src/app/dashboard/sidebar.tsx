@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { mainNav, navSections, type NavItem } from "@/lib/navigation";
 import { SignOutButton, UserButton } from "@clerk/nextjs";
