@@ -103,7 +103,7 @@ function NavGroup({
       <div
         className={cn(
           "overflow-hidden transition-all duration-300 ease-in-out",
-          expanded ? "max-h-40 opacity-100" : "max-h-0 opacity-0"
+          expanded ? "max-h-60 opacity-100" : "max-h-0 opacity-0"
         )}
       >
         <div className="mt-1 space-y-1">

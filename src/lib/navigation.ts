@@ -9,6 +9,8 @@ import {
   PieChart,
   Table2,
   Activity,
+  TrendingUp,
+  UserPlus,
   type LucideIcon,
 } from "lucide-react"
 
@@ -31,6 +33,8 @@ export const sellerNav: NavItem[] = [
       { label: "General", href: "/dashboard/seller", icon: Table2 },
       { label: "Activos / Inactivos", href: "/dashboard/seller/active-inactive", icon: PieChart },
       { label: "Actividad", href: "/dashboard/seller/activity", icon: Activity },
+      { label: "Crecimiento", href: "/dashboard/seller/growth", icon: TrendingUp },
+      { label: "Registros", href: "/dashboard/seller/registrations", icon: UserPlus },
     ],
   },
   { label: "Productos", href: "/dashboard/seller/products", icon: Package },
