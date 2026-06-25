@@ -11,6 +11,7 @@ import {
   TrendingUp,
   UserPlus,
   BarChart3,
+  Timer,
   type LucideIcon,
 } from "lucide-react"
 
@@ -45,7 +46,16 @@ export const deliveryNav: NavItem[] = [
 ]
 
 export const paymentsNav: NavItem[] = [
-  { label: "Pagos", href: "/dashboard/payments", icon: CreditCard },
+  {
+    label: "Pagos",
+    icon: CreditCard,
+    children: [
+      { label: "Overview", href: "/dashboard/payments", icon: LayoutDashboard },
+      { label: "Volumen", href: "/dashboard/payments/volume", icon: BarChart3 },
+      { label: "Usuarios", href: "/dashboard/payments/users", icon: Users },
+      { label: "Confirmación", href: "/dashboard/payments/confirmation-time", icon: Timer },
+    ],
+  },
 ]
 
 export const feedbackNav: NavItem[] = [
