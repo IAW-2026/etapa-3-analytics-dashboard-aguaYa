@@ -13,6 +13,6 @@ export async function requireAnalyst() {
     if (sessionId) {
       await client.sessions.revokeSession(sessionId)
     }
-    redirect('/sign-in')
+    redirect('/sign-out-session')
   }
 }
