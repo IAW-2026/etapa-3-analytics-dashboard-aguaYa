@@ -1,7 +1,6 @@
 import {
   LayoutDashboard,
   Store,
-  Package,
   Truck,
   CreditCard,
   MessageSquare,
@@ -11,6 +10,7 @@ import {
   Activity,
   TrendingUp,
   UserPlus,
+  BarChart3,
   type LucideIcon,
 } from "lucide-react"
 
@@ -35,9 +35,9 @@ export const sellerNav: NavItem[] = [
       { label: "Actividad", href: "/dashboard/seller/activity", icon: Activity },
       { label: "Crecimiento", href: "/dashboard/seller/growth", icon: TrendingUp },
       { label: "Registros", href: "/dashboard/seller/registrations", icon: UserPlus },
+      { label: "Inventario", href: "/dashboard/seller/inventory", icon: BarChart3 },
     ],
   },
-  { label: "Productos", href: "/dashboard/seller/products", icon: Package },
 ]
 
 export const deliveryNav: NavItem[] = [
