@@ -6,7 +6,7 @@ import { useState, useMemo } from "react"
 import { cn } from "@/lib/utils"
 import { mainNav, navSections, type NavItem } from "@/lib/navigation"
 import { SignOutButton, UserButton } from "@clerk/nextjs"
-import { LogOut, ChevronRight } from "lucide-react"
+import { LogOut, ChevronRight, Menu, X } from "lucide-react"
 import ThemeToggle from "@/components/layout/ThemeToggle"
 
 function collectAllPaths(items: NavItem[]): string[] {
@@ -164,18 +164,19 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      <div className="border-t border-white/20 p-4 dark:border-slate-700/30">
-        <div className="mb-2 flex items-center gap-3 px-3 py-2">
-          <UserButton />
-          <span className="text-sm text-slate-600 dark:text-slate-400">Mi cuenta</span>
+        <div className="border-t border-white/20 p-4 dark:border-slate-700/30">
+          <div className="mb-2 flex items-center gap-3 px-3 py-2">
+            <UserButton />
+            <span className="text-sm text-slate-600 dark:text-slate-400">Mi cuenta</span>
+          </div>
+          <SignOutButton redirectUrl="/sign-in">
+            <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-slate-500 transition-colors hover:bg-white/20 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-white/5 dark:hover:text-white">
+              <LogOut className="h-4 w-4" />
+              Cerrar sesión
+            </button>
+          </SignOutButton>
         </div>
-        <SignOutButton redirectUrl="/sign-in">
-          <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-slate-500 transition-colors hover:bg-white/20 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-white/5 dark:hover:text-white">
-            <LogOut className="h-4 w-4" />
-            Cerrar sesión
-          </button>
-        </SignOutButton>
-      </div>
-    </aside>
+      </aside>
+    </>
   )
 }
