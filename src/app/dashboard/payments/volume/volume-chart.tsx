@@ -56,10 +56,10 @@ export default function VolumeChart({ data }: { data: DataPoint[] }) {
         />
         <Tooltip
           contentStyle={glassTooltip}
-          formatter={(value: number, name: string) =>
+          formatter={(value, name) =>
             name === "amount"
-              ? [`$${value.toLocaleString("es-AR")}`, "Monto"]
-              : [value, "Transacciones"]
+              ? [`$${Number(value ?? 0).toLocaleString("es-AR")}`, "Monto"]
+              : [value ?? 0, "Transacciones"]
           }
         />
         <Legend

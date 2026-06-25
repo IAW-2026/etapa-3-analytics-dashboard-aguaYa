@@ -38,7 +38,7 @@ export default function BucketsChart({ buckets }: { buckets: Bucket[] }) {
         />
         <Tooltip
           contentStyle={glassTooltip}
-          formatter={(value: number) => [value, "Pagos"]}
+          formatter={(value) => [value ?? 0, "Pagos"]}
         />
         <Bar dataKey="count" radius={[4, 4, 0, 0]}>
           {buckets.map((_, i) => (

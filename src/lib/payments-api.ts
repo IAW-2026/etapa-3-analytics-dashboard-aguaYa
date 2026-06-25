@@ -1,5 +1,5 @@
 const PAYMENT_APP_URL = process.env.PAYMENT_APP_URL!
-const API_KEY = process.env.CONTROL_PLANE_API_KEY!
+const API_KEY = process.env.PAYMENT_API_KEY!
 
 type RequestOptions = {
   method?: string

@@ -58,7 +58,7 @@ export default function RevenueChart({ data }: { data: MonthlyRevenue[] }) {
         />
         <Tooltip
           contentStyle={glassTooltip}
-          formatter={(value: number) => [`$${value.toLocaleString("es-AR")}`, "Ingresos"]}
+          formatter={(value) => [`$${Number(value ?? 0).toLocaleString("es-AR")}`, "Ingresos"]}
           labelFormatter={(label) => label}
         />
         <Area

@@ -68,7 +68,7 @@ export default function StatusChart(props: Props) {
           </Pie>
           <Tooltip
             contentStyle={glassTooltip}
-            formatter={(value) => [`${value} pagos`]}
+            formatter={(value) => [`${value ?? 0} pagos`]}
           />
         </PieChart>
       </ResponsiveContainer>
