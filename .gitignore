@@ -15,6 +15,10 @@ out/
 # production
 /build
 
+# Carpetas
+
+ArchivosLocales/
+
 # env files
 .env
 .env*.local
@@ -38,3 +42,6 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# clerk configuration (can include secrets)
+/.clerk/
