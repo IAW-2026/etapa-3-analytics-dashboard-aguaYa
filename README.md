@@ -1,10 +1,25 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/l2PpCgMp)
-# analytics-dashboard
+# Analytics Dashboard — AguaYa
 
-Aplicación **Analytics Dashboard** del [Proyecto IAW 2026](https://iaw-2026.github.io/proyecto/) — comisión `<!-- completar -->`.
+Dashboard de métricas consolidadas del ecosistema **AguaYa**. Consume las APIs de las apps del sistema (Seller, Feedback, etc.) para ofrecer una visión unificada del negocio.
 
-Herramienta de reportes consolidados (Etapa 3): métricas del sistema completo consultando las APIs de cada webapp individual.
+**Deploy:** https://etapa-3-analytics-dashboard-agua-ya.vercel.app/
 
----
+## Acceso
 
-Enunciado completo: <https://iaw-2026.github.io/proyecto/>
+| Rol | Credenciales |
+|---|---|
+| **Analyst** | Iniciar sesión con Google. El usuario debe tener el rol `analyst` en Clerk (publicMetadata). |
+
+> Para desarrollo, el role check puede descomentarse temporalmente en `src/lib/auth-utils.ts`.
+
+## Stack
+
+`Next.js 16` · `React 19` · `TypeScript` · `Tailwind v4` · `Clerk` · `Recharts`
+
+## Scripts
+
+```bash
+npm install   # Instalar dependencias
+npm run dev   # Servidor de desarrollo
+npm run build # Build de producción
+```
