@@ -1,9 +1,24 @@
-# analytics-dashboard
+# Analytics Dashboard — AguaYa
 
-Aplicación **Analytics Dashboard** del [Proyecto IAW 2026](https://iaw-2026.github.io/proyecto/) — comisión `<!-- completar -->`.
+Dashboard de métricas consolidadas del ecosistema **AguaYa**. Consume las APIs de las apps del sistema (Seller, Feedback, etc.) para ofrecer una visión unificada del negocio.
 
-Herramienta de reportes consolidados (Etapa 3): métricas del sistema completo consultando las APIs de cada webapp individual.
+**Deploy:** https://etapa-3-analytics-dashboard-agua-ya.vercel.app/
 
----
+## Acceso
 
-Enunciado completo: <https://iaw-2026.github.io/proyecto/>
+| Rol | Credenciales |
+|---|---|
+| **Analyst** | analyst1+clerk_test@iaw.com, analyst2+clerk_test@iaw.com contraseñas: iawuser#| 
+
+
+## Stack
+
+`Next.js 16` · `React 19` · `TypeScript` · `Tailwind v4` · `Clerk` · `Recharts`
+
+## Scripts
+
+```bash
+npm install   # Instalar dependencias
+npm run dev   # Servidor de desarrollo
+npm run build # Build de producción
+```
