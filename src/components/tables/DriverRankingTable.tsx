@@ -1,7 +1,6 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import { VendorSparkline } from "@/app/dashboard/seller/growth/vendor-sparkline"
 import { ChevronUp, ChevronDown } from "lucide-react"
 import type { DriverRankingEntry } from "@/lib/delivery-types"
 
@@ -9,7 +8,7 @@ type Props = {
   drivers: DriverRankingEntry[]
 }
 
-type SortKey = "name" | "deliveries" | "avgTime" | "rating"
+type SortKey = "name" | "deliveries" | "avgTime"
 
 const PAGE_SIZE = 10
 
@@ -78,7 +77,6 @@ export default function DriverRankingTable({ drivers }: Props) {
                 { key: "name", label: "Nombre" },
                 { key: "deliveries", label: "Pedidos" },
                 { key: "avgTime", label: "Tiempo Prom." },
-                { key: "rating", label: "Calificación" },
               ] as { key: SortKey; label: string }[]).map((col) => (
                 <th
                   key={col.key}
@@ -89,15 +87,12 @@ export default function DriverRankingTable({ drivers }: Props) {
                   <SortIcon active={sortKey === col.key} direction={sortDir} />
                 </th>
               ))}
-              <th className="px-3 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                Tendencia
-              </th>
             </tr>
           </thead>
           <tbody>
             {paginated.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-3 py-8 text-center text-sm text-slate-400 dark:text-slate-500">
+                <td colSpan={4} className="px-3 py-8 text-center text-sm text-slate-400 dark:text-slate-500">
                   {search ? "No se encontraron choferes con ese nombre." : "No hay datos disponibles"}
                 </td>
               </tr>
@@ -118,22 +113,6 @@ export default function DriverRankingTable({ drivers }: Props) {
                 </td>
                 <td className="px-3 py-2.5 text-slate-500 dark:text-slate-400">
                   {driver.avgTime ? `${driver.avgTime.toFixed(1)} min` : "—"}
-                </td>
-                <td className="px-3 py-2.5">
-                  {driver.rating ? (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700 dark:bg-amber-900/50 dark:text-amber-400">
-                      ★ {driver.rating.toFixed(1)}
-                    </span>
-                  ) : (
-                    <span className="text-slate-400">—</span>
-                  )}
-                </td>
-                <td className="px-3 py-2.5">
-                  {driver.trend && driver.trend.length > 0 ? (
-                    <VendorSparkline data={driver.trend} color="#3b82f6" />
-                  ) : (
-                    <span className="text-slate-400">—</span>
-                  )}
                 </td>
               </tr>
             ))}
