@@ -8,9 +8,8 @@ Dashboard de métricas consolidadas del ecosistema **AguaYa**. Consume las APIs 
 
 | Rol | Credenciales |
 |---|---|
-| **Analyst** | Iniciar sesión con Google. El usuario debe tener el rol `analyst` en Clerk (publicMetadata). |
+| **Analyst** | analyst1+clerk_test@iaw.com, analyst2+clerk_test@iaw.com contraseñas: iawuser#| 
 
-> Para desarrollo, el role check puede descomentarse temporalmente en `src/lib/auth-utils.ts`.
 
 ## Stack
 
